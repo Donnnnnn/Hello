@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>分页</title>
+
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}"/>
+      
+    <script th:src="@{js/jquery-1.10.2.min.js}"></script>
+     
+    <script th:src="@{js/bootstrap.min.js}"></script> 
+      
+    <script th:src="@{js/kkpager.min.js}"></script>
+    
+    <link rel="stylesheet" th:href="@{css/kkpager_blue.css}"/>
+
+</head>
+<body>
+
+    <table class="table table-hover" style="margin-top:2px;">  
+        <tr>  
+            <th>姓名</th>  
+            <th>密码</th>  
+        </tr>  
+     	<tr th:each="user,userStat : ${resultMap.resultList}">  
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.password}"></td> 
+        </tr>  
+          
+    </table> 
+    
+    <div style="width:800px;margin:0 auto;">  
+          
+        <div id="kkpager"></div>  
+          
+    </div>  
+    
+    <!-- Thymeleaf必须要加 th:inline="javascript" -->
+         
+    <script th:inline="javascript">
+
+	    $(function() {
+	    	//Thymeleaf引用后台参数，要用如下方式
+	   		var totalPage = [[${resultMap.totalPage}]];
+	    	var totalRecords = [[${resultMap.totalNum}]];
+	    	var pageSize = [[${resultMap.pageSize}]];
+	    	var pageNum = parseInt([[${resultMap.pageNum}]]) + 1;
+	    	//初始化分页控件  
+	    	//有些参数是可选的，比如lang，若不传有默认值  
+	    	kkpager.init({
+	    		pno : pageNum,
+	    		//总页码  
+	    		total : [[${resultMap.totalPage}]],
+	    		//总数据条数  
+	    		totalRecords : totalRecords,
+	    		//链接前部  
+	    		hrefFormer : 'list',
+	    		//链接尾部  
+	    		hrefLatter : '',
+	    		getLink : function(n) {
+	    			return getInitParam() + "&pageNum=" + n + "&pageSize=" + pageSize;
+	    		},
+	    		lang : {
+	    			prePageText : '上一页',
+	    			nextPageText : '下一页',
+	    			totalPageBeforeText : '共',
+	    			totalPageAfterText : '页',
+	    			totalRecordsAfterText : '条数据',
+	    			gopageBeforeText : '转到',
+	    			gopageButtonOkText : '确定',
+	    			gopageAfterText : '页',
+	    			buttonTipBeforeText : '第',
+	    			buttonTipAfterText : '页'
+	    		}
+	    	});
+	    	//生成  
+	    	kkpager.generPageHtml();
+	
+	    	$('#mykkpagerselect').val(pageSize);
+	    });
+	
+	        function getInitParam() {  
+	            /*
+	            *	访问list方法，添加“？”，为了在地址栏拼接后面的参数，比如：
+	            *	http://localhost:8080/list?&pageNum=1&pageSize=10
+	            */
+	        	return "list"+"?";  
+	        }  
+	
+	    /**  
+	     * 搜索。  
+	     */
+	    function search() {
+	    	$('#form').submit();
+	    }
+
+    	
+    </script>
+
+</body>
+</html>
